@@ -28,7 +28,7 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 
-# Edit and add the correct key / secret
+# Replace with the correct key / secret
 AWS_ACCESS_KEY_ID = 'qwerty123456'
 AWS_SECRET_ACCESS_KEY = '123456789qwerty'
 S3_BUCKET_NAME = 'bucket'

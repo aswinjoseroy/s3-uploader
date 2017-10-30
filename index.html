@@ -10,32 +10,39 @@
         <input type="file" name="fileToUpload" id="fileToUpload" />
         <input class="amazon_upload" type="submit" value="Upload File" name="submit" onclick="getFormData()" />
     </form>
+
 <script type="text/javascript">
 	function getFormData(){
-		var fileName=document.getElementById("fileToUpload").value;
-		var xmlHttp = new XMLHttpRequest();
-    	xmlHttp.open( "GET", 'http://127.0.0.1:8000/s3_uploader_app/', false ); 
-    	xmlHttp.send( null );
-    	stsTokenDetails = JSON.parse(xmlHttp.responseText);
-    	token = stsTokenDetails['sts_token'];
+        try{
+            var fileName=document.getElementById("fileToUpload").value;
+            var xmlHttp = new XMLHttpRequest();
+            xmlHttp.open( "GET", 'http://127.0.0.1:8000/s3_uploader_app/', false ); 
+            xmlHttp.send( null );
+            stsTokenDetails = JSON.parse(xmlHttp.responseText);
+            token = stsTokenDetails['sts_token'];
 
-    	// these should be the credentials of the IAM user
-    	AWS.config.update({
-    		region: "us-east-1",
-    		credentials: new AWS.Credentials('AccessKeyId', 'SecretAccessKey', token)
-		});
+            // these should be the credentials of the IAM user
+            AWS.config.update({
+                region: "us-east-1",
+                credentials: new AWS.Credentials('AccessKeyId', 'SecretAccessKey', token)
+            });
 
-		// Upload the File
-		var bucket = new AWS.S3({params: {Bucket: 'myBucket'}});
-		var params = {Key: fileName, Body: fileName};
-		bucket.upload(params, function (err, data) {
-			if (err) {
-      			console.log('There was an error uploading your file: ', err.message);
-				}
-			else{
-    			console.log('Successfully uploaded file.');
-			}
-		});
+            // Upload the File
+            var bucket = new AWS.S3({params: {Bucket: 'myBucket'}});
+            var params = {Key: fileName, Body: fileName};
+
+            bucket.upload(params, function (err, data) {
+                if (err) {
+                    console.log('There was an error uploading your file: '+ err.message);
+                    }
+                else{
+                    console.log('Successfully uploaded file.');
+                }
+            });
+        }
+        catch(e){
+            console.log('Error while trying to upload file : '+ e.message)
+        }
 	}
 </script>
 <script src="https://sdk.amazonaws.com/js/aws-sdk-2.1.12.min.js"></script>
